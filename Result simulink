@@ -1,0 +1,17 @@
+ PSO_check_fit_1
+l = 0.55
+mc = 0.5
+GlobalBest.Position=
+0.55884  0.93363
+GlobalBest.J=
+42.66
+Fisnish
+
+>> PSO_check_fit_1
+l = 0.55
+mc = 2.5
+GlobalBest.Position=
+0.073341  0.84952
+GlobalBest.J=
+62.8258
+Fisnish
