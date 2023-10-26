@@ -1,0 +1,131 @@
+clear
+%% Problem Definition
+warning('off');
+m=0.536; m1=0.375; m2=0.5;
+g =9.81; L2=0.35;      
+waof = 0.5*(sqrt(9.81/0.6)+sqrt(9.81/0.2)); waol = sqrt(9.81/0.4);
+n1 = 5;  n2 = 1;                 %trọng số hàm mục tiêu
+nVar = 2; 
+
+L1 = 0.2; 
+mc = 0.5;
+D1=mc/(m1+mc);
+
+l=L1+L2;
+VarMin = [0,pi/(sqrt(g/l))];                 %không gian tìm kiếm
+VarMax = [pi/(sqrt(g/l)),2*pi/(sqrt(g/l))];
+MaxIt=37;                                   %lần lặp tối đa
+VarSize = [1 nVar];  
+VelMax = 0.1*(VarMax-VarMin);
+VelMin = -VelMax;
+
+%% PSO parameter
+it=1;
+w =0.9;                        %khối lượng quán tính
+c1 = 2;                           %trọng số personal
+c2 = 2;                           %trọng số global
+nPop = 10;                         %dân số
+
+%% Initialization
+empty_particle.Position = [];
+empty_particle.Velocity = [];
+empty_particle.Best.Position = [];
+empty_particle.Best.J = [];
+particle = repmat(empty_particle, nPop, 1);
+GlobalBest.J = inf;
+for i = 1:nPop
+    %khởi tạo vị trí ban đầu
+    particle(i).Position = rand(VarSize).*(VarMax - VarMin) + VarMin;
+    %khởi tạo vận tốc ban đầu
+    particle(i).Velocity = zeros(VarSize);
+
+    %khởi tạo hàm mục tiêu
+    particle(i).J = inf;
+
+    %cập nhập pbest
+    particle(i).Best.Position = particle(i).Position;
+    particle(i).Best.J = particle(i).J;
+
+    % cập nhật gbest
+    if particle(i).Best.J<GlobalBest.J
+        GlobalBest.J = particle(i).Best.J;
+    end
+end
+BestJ = zeros(MaxIt, 1);
+
+%% PSO Loop
+
+for it = 1:MaxIt
+
+    for i = 1:nPop
+        simout = sim('model1');
+
+%---------------- tính giá trị hàm mục tiêu --------------------
+         
+        %particle(i).J = n1*simout.IAE(end)+n2*simout.MaxAngle(end);  
+        t=0:0.005:10; 
+        Fit=0;
+        for a=1:length(t)
+            if simout.Fit.Data(a)>Fit
+            Fit=simout.Fit.Data(a);
+            end
+        end
+        particle(i).J=Fit;
+          % cập nhật pbest
+        if particle(i).J < particle(i).Best.J
+
+            particle(i).Best.Position = particle(i).Position;
+            particle(i).Best.J = particle(i).J;
+
+            % cập nhật gbest
+            if particle(i).Best.J<GlobalBest.J
+
+                GlobalBest = particle(i).Best;
+
+            end
+
+        end
+
+        % cập nhật vận tốc
+        particle(i).Velocity = w*particle(i).Velocity ...
+            +c1*rand(VarSize).*(particle(i).Best.Position-particle(i).Position) ...
+            +c2*rand(VarSize).*(GlobalBest.Position-particle(i).Position);
+
+        % điều chỉnh vận tốc
+        particle(i).Velocity = max(particle(i).Velocity, VelMin);
+        particle(i).Velocity = min(particle(i).Velocity, VelMax);
+
+        % cập nhật vị trí
+        particle(i).Position = particle(i).Position + particle(i).Velocity;
+
+        % mirror vận tốc
+        IsOutside = (particle(i).Position<VarMin | particle(i).Position>VarMax);
+        particle(i).Velocity(IsOutside) = -particle(i).Velocity(IsOutside);
+
+        % cập nhật vị trí
+        particle(i).Position = max(particle(i).Position, VarMin);
+        particle(i).Position = min(particle(i).Position, VarMax);
+
+    end
+    %display giá trị mỗi lần lặp
+    BestJ(it) = GlobalBest.J;
+%      disp(['Iter ' num2str(it) ': Best J = ' num2str(BestJ(it)) ' || Best Position: ' num2str(GlobalBest.Position) ]);
+
+end
+data_zvd10(int8((l-L1_min)/L1_step+2),int8((mc-mc_min)/mc_step)*5+2)= GlobalBest.Position(1,1);
+data_zvd10(int8((l-L1_min)/L1_step+2),int8((mc-mc_min)/mc_step)*5+3)= GlobalBest.Position(1,2);
+data_zvd7(int8((l-L1_min)/L1_step+2),int8((mc-mc_min)/mc_step)*5+4)= GlobalBest.J;
+  disp(['l = ' num2str(l)]);
+%   disp([num2str(GlobalBest.Position(1,1)) '  ' num2str(GlobalBest.Position(1,2))]);
+
+%     disp(['time = ' num2str(time)]);
+% end
+disp(['mc = ' num2str(mc)]);
+
+disp([ 'Fisnish' ]);
+%% Results
+% figure;
+% plot(BestJ, 'LineWidth', 1.5);
+% xlabel('Iteration');
+% ylabel('Best J');
+% grid on;
