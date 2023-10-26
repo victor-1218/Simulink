@@ -14,7 +14,8 @@ D1=mc/(m1+mc);
 l=L1+L2;
 VarMin = [0,pi/(sqrt(g/l))];                 %không gian tìm kiếm
 VarMax = [pi/(sqrt(g/l)),2*pi/(sqrt(g/l))];
-MaxIt=37;                                   %lần lặp tối đa
+%MaxIt=37;                                   %lần lặp tối đa
+MaxIt=20;  
 VarSize = [1 nVar];  
 VelMax = 0.1*(VarMax-VarMin);
 VelMin = -VelMax;
@@ -22,9 +23,12 @@ VelMin = -VelMax;
 %% PSO parameter
 it=1;
 w =0.9;                        %khối lượng quán tính
+wmax=0.9; % inertia weight
+wmin=0.4; % inertia weight
 c1 = 2;                           %trọng số personal
 c2 = 2;                           %trọng số global
 nPop = 10;                         %dân số
+graph=zeros(nPop,2);               %mảng lưu dữ liệu để vẽ đồ thị
 
 %% Initialization
 empty_particle.Position = [];
@@ -56,7 +60,8 @@ BestJ = zeros(MaxIt, 1);
 %% PSO Loop
 
 for it = 1:MaxIt
-
+    graph(it,1)=it;    %lưu số thứ tự lần lặp
+    w=wmax-(wmax-wmin)*it/MaxIt; % update inertial weight
     for i = 1:nPop
         simout = sim('model1');
 
@@ -110,18 +115,18 @@ for it = 1:MaxIt
     %display giá trị mỗi lần lặp
     BestJ(it) = GlobalBest.J;
 %      disp(['Iter ' num2str(it) ': Best J = ' num2str(BestJ(it)) ' || Best Position: ' num2str(GlobalBest.Position) ]);
-
+     graph(it,2)=GlobalBest.J;    %lưu giá trị GlobalBest.J cho từng lần lặp
 end
-data_zvd10(int8((l-L1_min)/L1_step+2),int8((mc-mc_min)/mc_step)*5+2)= GlobalBest.Position(1,1);
-data_zvd10(int8((l-L1_min)/L1_step+2),int8((mc-mc_min)/mc_step)*5+3)= GlobalBest.Position(1,2);
-data_zvd7(int8((l-L1_min)/L1_step+2),int8((mc-mc_min)/mc_step)*5+4)= GlobalBest.J;
+%data_zvd10(int8((l-L1_min)/L1_step+2),int8((mc-mc_min)/mc_step)*5+2)= GlobalBest.Position(1,1);
+%data_zvd10(int8((l-L1_min)/L1_step+2),int8((mc-mc_min)/mc_step)*5+3)= GlobalBest.Position(1,2);
+%data_zvd7(int8((l-L1_min)/L1_step+2),int8((mc-mc_min)/mc_step)*5+4)= GlobalBest.J;
   disp(['l = ' num2str(l)]);
-%   disp([num2str(GlobalBest.Position(1,1)) '  ' num2str(GlobalBest.Position(1,2))]);
-
+  disp(['mc = ' num2str(mc)]);
+  disp([num2str(GlobalBest.Position(1,1)) '  ' num2str(GlobalBest.Position(1,2))]);
+  disp('GlobalBest.J=');
+  disp(num2str(GlobalBest.J));
 %     disp(['time = ' num2str(time)]);
 % end
-disp(['mc = ' num2str(mc)]);
-
 disp([ 'Fisnish' ]);
 %% Results
 % figure;
