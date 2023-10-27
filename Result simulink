@@ -26,11 +26,20 @@ GlobalBest.J=
 Fisnish
 
 %IAE
-PSO_check_fit_1
+>>PSO_check_fit_1
 l = 0.85
 mc = 0.5
 GlobalBest.Position=
 0.43155  1.0407
 GlobalBest.J=
 278.44
+Fisnish
+
+>>PSO_check_fit_1
+l = 0.85
+mc = 0.5
+GlobalBest.Position=
+0.50192  1.0757
+GlobalBest.J=
+199.6913
 Fisnish
