@@ -1,0 +1,66 @@
+%thong so mo hinh ly thuyet
+mt = 0.536;          %khoi luong cua xe day
+mp = 0.375;          %khoi luong cua tai
+%l = 0.64;               % chieu dai day
+g = 9.81;              %gia toc trong truong
+M=0.536;
+m=0.375;
+%D=0;
+D=0.03;
+%thong so bo dieu khien ADRC
+%b0 =6.14/0.04;
+b0=154;
+
+sCL = -4.3;
+Tsettle = -5.85/sCL;
+
+Kp = (sCL)^2;
+Kd = -2*sCL;
+
+%kESO = 350; % đặt điểm cực của bộ quan sát
+kESO=100;
+sESO = kESO*sCL; % điểm cực của bộ quan sát
+
+l1 = -3*sESO;
+l2 = 3*(sESO^2);
+l3 = -(sESO)^3;
+
+A = [0 1 0; 0 0 1; 0 0 0];
+B = [0; b0; 0];
+C = [1 0 0];
+L = [l1; l2; l3];
+
+
+%Bo input shaping
+w = sqrt(g/l);
+damping_ratio = 0.01;
+wd = w*sqrt(1-damping_ratio^2);
+k = exp(-damping_ratio*pi/sqrt(1-damping_ratio^2));
+
+%ZV
+A1_zv = k/(k+1);
+A2_zv = 1/(k+1);
+t1_zv = 0;
+t2_zv = pi/wd;
+
+%ZVD
+A1_zvd = (k^2)/((1+k)^2);
+A2_zvd = (2*k)/((1+k)^2);
+A3_zvd = 1/((1+k)^2);
+t1_zvd = 0;
+t2_zvd = pi/wd;
+t3_zvd = 2*pi/wd;
+
+%ETM4
+m_etm4 = 0.1;
+%I_etm4 = (1+m_etm4)*k/(k^2 + (1+m_etm4)*(k^(4/3)+k^(2/3)) + m_etm4);
+I_etm4 = (1+m_etm4)*k*k/(k^2 + (1+m_etm4)*(k^(4/3)+k^(2/3)) + m_etm4);
+
+A1_etm4 = I_etm4/(1+m_etm4);
+A2_etm4 = I_etm4/(k^(2/3));
+A3_etm4 = I_etm4/(k^(4/3));
+A4_etm4 = m_etm4*I_etm4/((1+m_etm4)*(k^2));
+t1_etm4 = 0;
+t2_etm4 = (2*pi/3)/wd;
+t3_etm4 = (4*pi/3)/wd;
+t4_etm4 = 2*pi/wd; 
