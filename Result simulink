@@ -24,3 +24,13 @@ GlobalBest.Position=
 GlobalBest.J=
 47.2275
 Fisnish
+
+%IAE
+PSO_check_fit_1
+l = 0.85
+mc = 0.5
+GlobalBest.Position=
+0.43155  1.0407
+GlobalBest.J=
+278.44
+Fisnish
