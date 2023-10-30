@@ -1,4 +1,4 @@
- PSO_check_fit_1
+>>PSO_check_fit_1
 l = 0.55
 mc = 0.5
 GlobalBest.Position=
@@ -42,4 +42,13 @@ GlobalBest.Position=
 0.50192  1.0757
 GlobalBest.J=
 199.6913
+Fisnish
+
+>>PSO_check_fit_1 (n1=1; n2=5)
+l = 0.85
+mc = 0.5
+GlobalBest.Position=
+0.47837  0.98663  1.4204
+GlobalBest.J=
+145.5662
 Fisnish
