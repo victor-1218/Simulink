@@ -52,3 +52,13 @@ GlobalBest.Position=
 GlobalBest.J=
 145.5662
 Fisnish
+
+>>PSO_check_fit_1
+l = 0.85
+mc = 0.5
+GlobalBest.Position=
+0.4932  1.0107  1.4118
+GlobalBest.J=
+144.4949
+Fisnish
+
